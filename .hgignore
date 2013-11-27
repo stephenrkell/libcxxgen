@@ -1,0 +1,5 @@
+syntax: glob
+
+lib/libcxxgen.so
+src/cxxgen.o
+src/libcxxgen.so
