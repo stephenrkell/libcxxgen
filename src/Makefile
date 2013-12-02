@@ -2,6 +2,8 @@ CXXFLAGS += -std=c++11 -g -fPIC -I../include/cxxgen
 
 CPP_SRC := $(wildcard *.cpp)
 
+LDLIBS += -ldwarfpp
+
 default: libcxxgen.so
 
 CPP_DEPS := $(patsubst %.cpp,.%.d,$(CPP_SRC))
