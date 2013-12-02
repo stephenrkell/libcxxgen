@@ -1,4 +1,4 @@
-CXXFLAGS += -std=c++11 -g -fPIC
+CXXFLAGS += -std=c++11 -g -fPIC -I../include/cxxgen
 
 CPP_SRC := $(wildcard *.cpp)
 
@@ -13,7 +13,7 @@ $(CPP_DEPS): .%.d : %.c
 
 -include $(DEPS)
 
-libcxxgen.so: cxxgen.o
+libcxxgen.so: cxxgen.o cxx_compiler.o
 	$(CXX) $(CXXFLAGS) -shared -o "$@" "$<" $(LDFLAGS) $(LDLIBS)
 
 clean: 
