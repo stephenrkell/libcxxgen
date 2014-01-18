@@ -37,24 +37,24 @@ namespace dwarf { namespace tool {
 	/* We put first the ones that GCC's DWARF generator seems to use.
 	 * This is helpful in libcrunch, to avoid defining too many uniqtype symbol aliases, 
 	 * although eventually we should define the full set anyway. */
-	const char *cxx_compiler::base_typename_equivs_schar[] = {
+	const char *abstract_c_compiler::base_typename_equivs_schar[] = {
 		"signed char",
-		"char",
+		"char",          // FIXME: some implementations could have 'char' as unsigned
 		"char signed",
 		NULL
 	};
-	const char *cxx_compiler::base_typename_equivs_uchar[] = {
+	const char *abstract_c_compiler::base_typename_equivs_uchar[] = {
 		"unsigned char",
 		"char unsigned",
 		NULL
 	}; 
-	const char *cxx_compiler::base_typename_equivs_sshort[] = {
+	const char *abstract_c_compiler::base_typename_equivs_sshort[] = {
 		"short int",
 		"short",
 		"int short",
 		NULL
 	};
-	const char *cxx_compiler::base_typename_equivs_ushort[] = {
+	const char *abstract_c_compiler::base_typename_equivs_ushort[] = {
 		"short unsigned int",
 		"unsigned short",
 		"short unsigned",
@@ -65,20 +65,20 @@ namespace dwarf { namespace tool {
 		"short int unsigned",
 		NULL
 	};
-	const char *cxx_compiler::base_typename_equivs_sint[] = {
+	const char *abstract_c_compiler::base_typename_equivs_sint[] = {
 		"int",
 		"signed", 
 		"signed int",
 		"int signed",
 		NULL
 	};
-	const char *cxx_compiler::base_typename_equivs_uint[] = {
+	const char *abstract_c_compiler::base_typename_equivs_uint[] = {
 		"unsigned int",
 		"unsigned",
 		"int unsigned",
 		NULL
 	};
-	const char *cxx_compiler::base_typename_equivs_slong[] = {
+	const char *abstract_c_compiler::base_typename_equivs_slong[] = {
 		"long int", 
 		"long",
 		"int long",
@@ -91,7 +91,7 @@ namespace dwarf { namespace tool {
 		"signed long", 
 		NULL
 	};
-	const char *cxx_compiler::base_typename_equivs_ulong[] = {
+	const char *abstract_c_compiler::base_typename_equivs_ulong[] = {
 		"unsigned long int", // with {int, signed}
 		"int unsigned long",
 		"int long unsigned",
@@ -101,7 +101,7 @@ namespace dwarf { namespace tool {
 		"unsigned long", 
 		NULL
 	};
-	const char *cxx_compiler::base_typename_equivs_slonglong[] = {
+	const char *abstract_c_compiler::base_typename_equivs_slonglong[] = {
 		"long long int",
 		"long long",
 		"long int long",
@@ -123,7 +123,7 @@ namespace dwarf { namespace tool {
 		"signed int long long",
 		NULL
 	};
-	const char *cxx_compiler::base_typename_equivs_ulonglong[] = {
+	const char *abstract_c_compiler::base_typename_equivs_ulonglong[] = {
 		"long long unsigned int",
 		"long long unsigned", // with signed
 		"long unsigned long",
@@ -141,44 +141,62 @@ namespace dwarf { namespace tool {
 		"unsigned int long long",
 		NULL
 	};
-	const char *cxx_compiler::base_typename_equivs_float[] = {
+	const char *abstract_c_compiler::base_typename_equivs_float[] = {
 		"float",
 		NULL
 	};
-	const char *cxx_compiler::base_typename_equivs_double[] = {
+	const char *abstract_c_compiler::base_typename_equivs_double[] = {
 		"double",
 		NULL
 	};
-	const char *cxx_compiler::base_typename_equivs_long_double[] = {
+	const char *abstract_c_compiler::base_typename_equivs_long_double[] = {
 		"long double",
 		"double long",
 		NULL
 	};
-	const char *cxx_compiler::base_typename_equivs_bool[] = {
-		"bool",	
-		NULL
-	};
-	const char *cxx_compiler::base_typename_equivs_wchar_t[] = {
+	const char *abstract_c_compiler::base_typename_equivs_wchar_t[] = {
 		"wchar_t",
+		NULL
+	};	
+	const char *abstract_cxx_compiler::base_typename_equivs_bool[] = {
+		"bool",	// FIXME: _Bool goes here too? or a separate decl for C?
 		NULL
 	};
 
-	const char **cxx_compiler::base_typename_equivs[] = {
-		cxx_compiler::base_typename_equivs_schar, 
-		cxx_compiler::base_typename_equivs_uchar, 
-		cxx_compiler::base_typename_equivs_sshort, 
-		cxx_compiler::base_typename_equivs_ushort, 
-		cxx_compiler::base_typename_equivs_sint, 
-		cxx_compiler::base_typename_equivs_uint, 
-		cxx_compiler::base_typename_equivs_slong, 
-		cxx_compiler::base_typename_equivs_ulong, 
-		cxx_compiler::base_typename_equivs_slonglong, 
-		cxx_compiler::base_typename_equivs_ulonglong, 
-		cxx_compiler::base_typename_equivs_float, 
-		cxx_compiler::base_typename_equivs_double, 
-		cxx_compiler::base_typename_equivs_long_double, 
-		cxx_compiler::base_typename_equivs_bool, 
-		cxx_compiler::base_typename_equivs_wchar_t, 
+	const char **const abstract_c_compiler::base_typename_equivs[] = {
+		abstract_c_compiler::base_typename_equivs_schar, 
+		abstract_c_compiler::base_typename_equivs_uchar, 
+		abstract_c_compiler::base_typename_equivs_sshort, 
+		abstract_c_compiler::base_typename_equivs_ushort, 
+		abstract_c_compiler::base_typename_equivs_sint, 
+		abstract_c_compiler::base_typename_equivs_uint, 
+		abstract_c_compiler::base_typename_equivs_slong, 
+		abstract_c_compiler::base_typename_equivs_ulong, 
+		abstract_c_compiler::base_typename_equivs_slonglong, 
+		abstract_c_compiler::base_typename_equivs_ulonglong, 
+		abstract_c_compiler::base_typename_equivs_float, 
+		abstract_c_compiler::base_typename_equivs_double, 
+		abstract_c_compiler::base_typename_equivs_long_double, 
+		abstract_c_compiler::base_typename_equivs_wchar_t, 
+		NULL
+	};
+	
+	const char **const abstract_cxx_compiler::base_typename_equivs[] = {
+		abstract_c_compiler::base_typename_equivs_schar, 
+		abstract_c_compiler::base_typename_equivs_uchar, 
+		abstract_c_compiler::base_typename_equivs_sshort, 
+		abstract_c_compiler::base_typename_equivs_ushort, 
+		abstract_c_compiler::base_typename_equivs_sint, 
+		abstract_c_compiler::base_typename_equivs_uint, 
+		abstract_c_compiler::base_typename_equivs_slong, 
+		abstract_c_compiler::base_typename_equivs_ulong, 
+		abstract_c_compiler::base_typename_equivs_slonglong, 
+		abstract_c_compiler::base_typename_equivs_ulonglong, 
+		abstract_c_compiler::base_typename_equivs_float, 
+		abstract_c_compiler::base_typename_equivs_double, 
+		abstract_c_compiler::base_typename_equivs_long_double, 
+		abstract_c_compiler::base_typename_equivs_wchar_t, 
+		abstract_cxx_compiler::base_typename_equivs_bool, 
 		NULL
 	};
 	
