@@ -23,6 +23,8 @@ using std::multimap;
 using std::cerr;
 using std::endl;
 
+#define ARRAY_NELEMS(a) (sizeof((a)) / sizeof((a)[0]))
+
 namespace dwarf { namespace tool {
 	cxx_compiler::cxx_compiler() : compiler_argv(default_compiler_argv()) 
 	{
@@ -180,6 +182,8 @@ namespace dwarf { namespace tool {
 		abstract_c_compiler::base_typename_equivs_wchar_t, 
 		NULL
 	};
+	const char **const *abstract_c_compiler::base_typename_equivs_end = 
+		&abstract_c_compiler::base_typename_equivs[ARRAY_NELEMS(abstract_c_compiler::base_typename_equivs) - 1];
 	
 	const char **const abstract_cxx_compiler::base_typename_equivs[] = {
 		abstract_c_compiler::base_typename_equivs_schar, 
@@ -199,6 +203,8 @@ namespace dwarf { namespace tool {
 		abstract_cxx_compiler::base_typename_equivs_bool, 
 		NULL
 	};
+	const char **const *abstract_cxx_compiler::base_typename_equivs_end = 
+		&abstract_cxx_compiler::base_typename_equivs[ARRAY_NELEMS(abstract_c_compiler::base_typename_equivs) - 1];
 	
 	void cxx_compiler::discover_base_types()
 	{
@@ -213,11 +219,11 @@ namespace dwarf { namespace tool {
 		ostringstream test_src;
 
 		vector<string> base_typenames_vec;
-		for (auto p_equiv = base_typename_equivs[0]; p_equiv != NULL; ++p_equiv)
+		for (const char ** const* p_equiv = base_typename_equivs; *p_equiv != NULL; ++p_equiv)
 		{
-			for (auto p_el = p_equiv[0]; p_el != NULL; ++p_el)
+			for (const char **p_el = p_equiv[0]; *p_el != NULL; ++p_el)
 			{
-				base_typenames_vec.push_back(string(p_el));
+				base_typenames_vec.push_back(string(*p_el));
 			}
 		}
 		

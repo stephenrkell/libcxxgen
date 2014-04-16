@@ -35,8 +35,27 @@ namespace dwarf
 			static const char * base_typename_equivs_float[];
 			static const char * base_typename_equivs_double[];
 			static const char * base_typename_equivs_long_double[];
+		
+			static inline const char **get_equivalence_class_in(const char ** const *classes,
+				const char *name)
+			{
+				for (const char ** const* p_equiv = &classes[0]; *p_equiv != NULL; ++p_equiv)
+				{
+					for (const char **p_el = p_equiv[0]; *p_el != NULL; ++p_el)
+					{
+						if (string(*p_el) == name) return p_equiv[0];
+					}
+				}
+				return nullptr;
+			}
 		public:
 			static const char **const base_typename_equivs[];
+			static const char **const *base_typename_equivs_end;
+			
+			inline static const char **get_equivalence_class_ptr(const char *name)
+			{
+				return get_equivalence_class_in(base_typename_equivs, name);
+			}
 		};
 		
 		class abstract_cxx_compiler : abstract_c_compiler // private inheritance
@@ -45,6 +64,11 @@ namespace dwarf
 			static const char *base_typename_equivs_bool[];
 		public:
 			static const char **const base_typename_equivs[];
+			static const char **const *base_typename_equivs_end;
+			inline static const char **get_equivalence_class_ptr(const char *name)
+			{
+				return get_equivalence_class_in(base_typename_equivs, name);
+			}
 		};
 		
 		class cxx_compiler : public abstract_cxx_compiler
