@@ -2,21 +2,19 @@
 #define DWARFPP_CXX_COMPILER_HPP_
 
 #include <dwarfpp/lib.hpp>
-#include <dwarfpp/spec_adt.hpp>
 
 namespace dwarf
 {
 	namespace tool
 	{
 		using namespace dwarf::lib;
-		using std::dynamic_pointer_cast;
 		using boost::optional;
-		using std::shared_ptr;
 		using std::string;
 		using std::vector;
 		using std::pair;
 		using std::multimap;
 		using std::endl;
+		using dwarf::core::iterator_base;
 		
 		class abstract_c_compiler
 		{
@@ -103,7 +101,7 @@ namespace dwarf
 					&&	bit_offset == arg.bit_offset
 					&&	bit_size == arg.bit_size;
 				}
-				base_type(shared_ptr<spec::base_type_die> p_d);
+				base_type(const iterator_base& p_d);
 				friend std::ostream& operator<<(std::ostream& s, const base_type& c);
 			}; 
 

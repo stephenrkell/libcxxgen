@@ -9,8 +9,7 @@
 
 #include "cxx_compiler.hpp"
 
-using std::dynamic_pointer_cast;
-using std::shared_ptr;
+
 using boost::optional;
 using std::string;
 using std::vector;
@@ -22,6 +21,7 @@ using std::map;
 using std::multimap;
 using std::cerr;
 using std::endl;
+using dwarf::core::iterator_base;
 
 #define ARRAY_NELEMS(a) (sizeof((a)) / sizeof((a)[0]))
 
@@ -281,63 +281,42 @@ namespace dwarf { namespace tool {
 		FILE* f = fopen(tmpnam_cxxoutput_buf, "r");
 		assert(f);
 
-		// encapsulate the DIEs
-		dwarf::lib::file outdf(fileno(f));
-		dwarf::lib::dieset ds(outdf);
+		dwarf::core::root_die r(fileno(f));
 
-		try
+		auto p_cu = r.begin().children().first.as_a<compile_unit_die>();
+		assert(p_cu);
+		assert(p_cu->get_producer());
+		this->m_producer_string = *p_cu->get_producer();
+		auto bts = p_cu.children().subseq_of<base_type_die>();
+		for (auto i_bt = bts.first; i_bt != bts.second; ++i_bt)
 		{
-			auto p_cu = dynamic_pointer_cast<spec::compile_unit_die>(
-				ds.toplevel()->get_first_child());
-			assert(p_cu);
-			assert(p_cu->get_producer());
-			this->m_producer_string = *p_cu->get_producer();
-			for (auto i_bt = p_cu->get_first_child();
-					i_bt;
-					i_bt = i_bt->get_next_sibling())
-			{
-				// if it's not a named base type, not interested
-				if (i_bt->get_tag() != DW_TAG_base_type || !i_bt->get_name()) continue;
+			assert(i_bt.base().base().tag_here() == DW_TAG_base_type);
+			// if it's not a named base type, not interested
+			opt<string> opt_name = i_bt.base().base().name_here();
+			if (!opt_name) continue;
 
-				//cerr << "Found a base type!" << endl << **i_bt 
-				//	<< ", name " << *((*i_bt)->get_name()) << endl;
-				base_types.insert(make_pair(
-					base_type(dynamic_pointer_cast<spec::base_type_die>(i_bt)),
-					*i_bt->get_name()));
-			}
+			//cerr << "Found a base type!" << endl << **i_bt 
+			//	<< ", name " << *((*i_bt)->get_name()) << endl;
+			base_types.insert(make_pair(
+				base_type(i_bt.base().base().base()),
+				*opt_name));
 		}
-		catch (No_entry) {}
-		
-		// print(cout, spec::DEFAULT_DWARF_SPEC);
 		
 		fclose(f);
 	}
 	
-	cxx_compiler::base_type::base_type(shared_ptr<spec::base_type_die> p_d)
-		: byte_size(*p_d->get_byte_size()),
-		  encoding(p_d->get_encoding()),
-		  bit_offset(p_d->get_bit_offset() ? *(p_d->get_bit_offset()) : 0),
-		  bit_size (p_d->get_bit_size() 
-					? *(p_d->get_bit_size()) 			// stored
-					: *p_d->get_byte_size() * 8 - bit_offset // defaulted
+	cxx_compiler::base_type::base_type(const iterator_base& i)
+		: byte_size(*i.as_a<base_type_die>()->get_byte_size()),
+		  encoding(i.as_a<base_type_die>()->get_encoding()),
+		  bit_offset(i.as_a<base_type_die>()->get_bit_offset() 
+		       ? *(i.as_a<base_type_die>()->get_bit_offset()) : 0),
+		  bit_size (i.as_a<base_type_die>()->get_bit_size() 
+					? *(i.as_a<base_type_die>()->get_bit_size()) 			// stored
+					: *i.as_a<base_type_die>()->get_byte_size() * 8 - bit_offset // defaulted
 					)
 	{ 
-		/*optional<Dwarf_Unsigned> attr_byte_size = p_d->get_byte_size();
-		Dwarf_Half attr_encoding = p_d->get_encoding();
-		optional<Dwarf_Unsigned> attr_bit_offset = p_d->get_bit_offset();
-		optional<Dwarf_Unsigned> attr_bit_size = p_d->get_bit_size();
-		
-		Dwarf_Unsigned opt_byte_size = 999UL;
-		Dwarf_Unsigned opt_bit_offset = 999UL;
-		Dwarf_Unsigned opt_bit_size = 999UL;
-		
-		if (attr_byte_size) opt_byte_size = *attr_byte_size;
-		if (attr_bit_offset) opt_bit_offset = *attr_bit_offset;
-		if (attr_bit_size) opt_bit_size = *attr_bit_size;*/
-		
-		assert(p_d->get_byte_size()); 
+		assert(i.as_a<base_type_die>()->get_byte_size()); 
 	}
-
 	std::ostream& cxx_compiler::print(
 		std::ostream& out, 
 		const spec::abstract_def& s
