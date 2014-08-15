@@ -4,11 +4,7 @@
 #include <string>
 #include <cstring>
 #include <map>
-
-#include <dwarfpp/adt.hpp>
-
 #include "cxx_compiler.hpp"
-
 
 using boost::optional;
 using std::string;
@@ -22,6 +18,9 @@ using std::multimap;
 using std::cerr;
 using std::endl;
 using dwarf::core::iterator_base;
+using dwarf::core::compile_unit_die;
+using dwarf::core::base_type_die;
+using dwarf::spec::opt;
 
 #define ARRAY_NELEMS(a) (sizeof((a)) / sizeof((a)[0]))
 
