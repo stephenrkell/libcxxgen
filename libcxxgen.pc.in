@@ -1,0 +1,15 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+pkgincludedir=${includedir}/@PACKAGE@
+pkglibdir=@pkglibdir@
+datarootdir=@datarootdir@
+datadir=@datadir@
+
+Name: libcxxgen
+Description: Help for those foolish enough to want to generate C++ code
+Version: 0.1
+Requires: libdwarfpp
+Cflags: -I${includedir}
+Libs: -L${libdir} -lcxxgen
