@@ -39,3 +39,11 @@ endif
 export LIBCXXFILENO_CXXFLAGS LIBCXXFILENO_LIBS \
 LIBSRK31CXX_CXXFLAGS LIBSRK31CXX_LIBS \
 LIBDWARFPP_CXXFLAGS LIBDWARFPP_LIBS
+
+lib/libcxxgen.so: $(lib_LTLIBRARIES)
+	mkdir -p lib && cd lib && ln -sf ../src/.libs/libcxxgen.so .
+
+lib/libcxxgen.so.0: $(lib_LTLIBRARIES)
+	mkdir -p lib && cd lib && ln -sf ../src/.libs/libcxxgen.so.0 .
+
+all: lib/libcxxgen.so lib/libcxxgen.so.0
