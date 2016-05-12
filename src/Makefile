@@ -3,7 +3,7 @@ CXXFLAGS += -std=c++11 -g -fPIC -I../include/cxxgen
 CPP_SRC := $(wildcard *.cpp)
 CC_SRC := $(wildcard *.cc)
 
-LDLIBS += -ldwarfpp
+LDLIBS += -ldwarfpp -lsrk31c++
 
 default: libcxxgen.so
 
