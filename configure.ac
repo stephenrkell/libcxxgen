@@ -25,6 +25,23 @@ AC_PROG_LN_S
 AC_PROG_INSTALL
 
 AC_CHECK_HEADERS([cstdlib cstring fstream map memory sstream string], [], [AC_MSG_FAILURE([required standard headers: cstdlib cstring fstream map memory sstream string])])
+AC_ARG_WITH([libdwarf-includes],
+            [AS_HELP_STRING([--with-libdwarf-includes=DIR],
+              [where to find libdwarf headers])],
+            [
+                if test -d "$withval"
+                then
+                        ac_libdwarf_includes="$withval"
+                else
+                        AC_MSG_ERROR(--with-libdwarf-includes expected directory name)
+                fi
+            ],
+            [ac_libdwarf_includes=/usr/include])
+
+AC_SUBST([libdwarf_includes], [$ac_libdwarf_includes])
+AC_CHECK_HEADERS([$ac_libdwarf_includes/dwarf.h $ac_libdwarf_includes/libdwarf.h], [], [AC_MSG_FAILURE([required headers: dwarf.h libdwarf.h (looked in $ac_libdwarf_includes)])])
+CFLAGS="-I$libdwarf_includes $CFLAGS"
+CXXFLAGS="-I$libdwarf_includes $CXXFLAGS"
 
 CPPFLAGS=$OLD_CPPFLAGS
 
