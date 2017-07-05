@@ -263,7 +263,7 @@ namespace dwarf { namespace tool {
 		// add compiler command+args to cmd
 		vector<string> cmd = compiler_argv;
 		cmd.push_back("-g"); 
- 		cmd.push_back("-c"); 
+		cmd.push_back("-c"); 
 		cmd.push_back("-o");
 		cmd.push_back(string(tmpnam_cxxoutput_buf));
 		cmd.push_back("-x c++");
@@ -289,15 +289,15 @@ namespace dwarf { namespace tool {
 		auto bts = p_cu.children().subseq_of<base_type_die>();
 		for (auto i_bt = bts.first; i_bt != bts.second; ++i_bt)
 		{
-			assert(i_bt.base().base().tag_here() == DW_TAG_base_type);
+			assert(i_bt.tag_here() == DW_TAG_base_type);
 			// if it's not a named base type, not interested
-			opt<string> opt_name = i_bt.base().base().name_here();
+			opt<string> opt_name = i_bt.name_here();
 			if (!opt_name) continue;
 
 			//cerr << "Found a base type!" << endl << **i_bt 
 			//	<< ", name " << *((*i_bt)->get_name()) << endl;
 			base_types.insert(make_pair(
-				base_type(i_bt.base().base().base()),
+				base_type(i_bt),
 				*opt_name));
 		}
 		
