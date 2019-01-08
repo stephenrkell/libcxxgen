@@ -24,7 +24,7 @@ AC_CHECK_TYPES([ptrdiff_t])
 AC_PROG_LN_S
 AC_PROG_INSTALL
 
-AC_CHECK_HEADERS([dwarf.h cstdlib cstring fstream map memory sstream string], [], [AC_MSG_FAILURE([required standard headers: cstdlib cstring fstream map memory sstream string])])
+AC_CHECK_HEADERS([cstdlib cstring fstream map memory sstream string], [], [AC_MSG_FAILURE([required standard headers: cstdlib cstring fstream map memory sstream string])])
 
 CPPFLAGS=$OLD_CPPFLAGS
 
