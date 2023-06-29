@@ -106,7 +106,10 @@ namespace dwarf
 			}; 
 
 		protected:
-			multimap<base_type, string> base_types;
+			/* An equivalence class is an array of pointers to const char*. */
+			typedef const char ** equiv_class_ptr_t;
+			equiv_class_ptr_t find_equiv_class(const string& name) const;
+			multimap<base_type, pair<string, equiv_class_ptr_t > > base_types; // map a 4-tuple to its name(s)
 			string m_producer_string;
 			//struct base_type dwarf_base_type(const dwarf::encap::Die_encap_base_type& d);
 			//static const string dummy_return;
@@ -118,7 +121,7 @@ namespace dwarf
 			static vector<string>
 			default_compiler_argv(bool use_cxxflags = true);
 			
-			typedef multimap<base_type, string>::iterator base_type_name_iterator;
+			typedef multimap<base_type, pair< string, equiv_class_ptr_t > >::iterator base_type_name_iterator;
 			
 			pair<base_type_name_iterator, base_type_name_iterator> 
 			names_for_base_type(const base_type& arg)

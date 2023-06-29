@@ -204,7 +204,24 @@ namespace dwarf { namespace tool {
 	};
 	const char **const *abstract_cxx_compiler::base_typename_equivs_end = 
 		&abstract_cxx_compiler::base_typename_equivs[ARRAY_NELEMS(abstract_c_compiler::base_typename_equivs) - 1];
-	
+
+	cxx_compiler::equiv_class_ptr_t cxx_compiler::find_equiv_class(const string& name) const
+	{
+		// for each equivalence class...
+		for (const char ** const* p_equiv = base_typename_equivs;
+			*p_equiv != NULL; ++p_equiv)
+		{
+			// point to the first element in the equivalence class, then increment
+			for (const char **p_el = p_equiv[0]; *p_el != NULL; ++p_el)
+			{
+				if (*p_el == name)
+				{
+					return p_equiv[0];
+				}
+			}
+		}
+		return nullptr;
+	}
 	void cxx_compiler::discover_base_types()
 	{
 		/* Discover the DWARF descriptions of our compiler's base types.
@@ -298,7 +315,11 @@ namespace dwarf { namespace tool {
 			//	<< ", name " << *((*i_bt)->get_name()) << endl;
 			base_types.insert(make_pair(
 				base_type(i_bt),
-				*opt_name));
+				make_pair(
+					*opt_name,
+					find_equiv_class(*opt_name)
+				)
+			));
 		}
 		
 		fclose(f);
@@ -328,12 +349,11 @@ namespace dwarf { namespace tool {
 			out << *i << ' ';
 		}
 		out << endl;
-		for (map<cxx_compiler::base_type, string>::const_iterator i = 
-				base_types.begin();
+		for (auto i = base_types.begin();
 				i != base_types.end();
 				i++)
 		{
-			out << i->second << " is " << i->first << endl;
+			out << i->second.first << " is " << i->first << endl;
 		}
 		return out;
 	}

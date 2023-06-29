@@ -23,7 +23,7 @@ LIBSRK31CXX_CXXFLAGS = $(LIBSRK31CXX_CFLAGS)
 endif
 
 ACLOCAL_AMFLAGS = -I m4
-AM_CXXFLAGS = -std=c++11 -Wall -Wno-deprecated-declarations -Iinclude -Iinclude/cxxgen $(LIBDWARFPP_CXXFLAGS) $(LIBSRK31CXX_CXXFLAGS) $(LIBCXXFILENO_CXXFLAGS)
+AM_CXXFLAGS = -std=c++11 -g -Wall -Wno-deprecated-declarations -Iinclude -Iinclude/cxxgen $(LIBDWARFPP_CXXFLAGS) $(LIBSRK31CXX_CXXFLAGS) $(LIBCXXFILENO_CXXFLAGS)
 
 cxxgen_includedir = $(includedir)/cxxgen
 cxxgen_include_HEADERS = include/cxxgen/cxx_compiler.hpp include/cxxgen/dwarf.hpp include/cxxgen/tokens.hpp
